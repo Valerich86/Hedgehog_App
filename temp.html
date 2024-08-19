@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Bona+Nova+SC:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="http://ajax.aspnetcdn.com/ajax/jquery.mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.min.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous">
+    </script>
+    <title>Hedgehog</title>
+</head>
+<body>
+    <div data-role="page">
+        <div data-role="header">
+            <div id="logo" class="center"><img src="resources/hedgehog.png" alt="Hedgehog"></div>
+            <div class="username">$userstr</div>
+        </div>
+        <div data-role="content">
+            <div class="center">
+                <a data-role="button" data-inline="true" data-icon="home" data-transition="slide" 
+                href="">Домашняя</a>
+                <a data-role="button" data-inline="true" data-icon="plus" data-transition="slide" 
+                href="">Регистрация</a>
+                <a data-role="button" data-inline="true" data-icon="check" data-transition="slide" 
+                href="">Войти</a>
+            </div><textarea name="" id="" cols="30" wrap="hard"></textarea>
+            <p class="info">(Для использования приложения необходимо пройти регистрацию)</p>
+
+        <form method="post" action="messages.php?view=$view&r=$randstr">
+            <fieldset data-role="controlgroup" data-type="horizontal">
+                <legend>Отправить сообщение</legend>
+                <input type="radio" name="pm" id="public" value="0" checked="checked">
+                <label for="public">Публичное</label>
+                <input type="radio" name="pm" id="private" value="1">
+                <label for="private">Приватное</label>
+            </fieldset>
+            <textarea name="text"></textarea>
+            <input data-transition="slide" type="submit" value="Отправить">
+            <img src="res/heghehog.png" alt="">
+        </form><br>
+    </div><br>
+</body>
+</html>
