@@ -24,7 +24,6 @@ if ($view != ""){
     }
 
     showProfile($view);
-    echo "<h3>$name1 сообщения:</h3>";
 
     echo <<<_END
         <form method="post" action="messages.php?view=$view&r=$randstr">

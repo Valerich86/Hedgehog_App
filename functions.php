@@ -36,7 +36,7 @@ function destroySession(){
     if(session_id() != "" || isset($_COOCKIE[session_name()]))
         setcookie(session_name(), '', time()-2592000, '/');
 
-        session_destroy();
+    session_destroy();
 }
 
 function sanitizeString($var){
@@ -50,15 +50,18 @@ function sanitizeString($var){
 
 function showProfile($user){
     global $pdo; 
-    if (file_exists('user.jpg'))
-        echo "<img src='user.jpg' alt='' style='float: left;' id='user-img'>";
 
     $res = $pdo->query("SELECT * FROM profiles WHERE user='$user'");
 
     while($row = $res->fetch()){
-        echo (stripslashes($row['text']) . "<br style='clear: left;'><br>");
+        if (file_exists('res/'.$row['photo'])){
+            $path = 'res/'.$row['photo'];
+            echo "<img src='$path' alt='' width=200px>";
+        }
+        echo ("<p><span class='whisper'>Мой день рождения: <br><br></span>". $row['birthday']. "<br><br>");
+        echo ("<span class='whisper'>Обо мне: <br><br></span>". stripslashes($row['about']) . "<br style='clear: left;'><br></p>");
     }
-    if (!$res->rowCount())
-        echo "Здесь пока ничего нет. <br>Добавьте информацию о себе во вкладке <span class='whisper'>'редактировать'.</span>";
+    if (!$res)
+    echo "<p>Здесь пока ничего нет. <br>Добавьте информацию о себе во вкладке <span class='whisper'>'редактировать'.</span></p><br>";
 }
 ?>

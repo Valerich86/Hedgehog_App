@@ -2,30 +2,15 @@
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 14pt;
 }
-
-body{
-    width: 700px;
-    margin: 20px auto;
-    background: #f8f8f8;
-    border: 1px solid #888;
-}
-
 html{
     background: #fff;
 }
-
-img not #hedgehog{
-    border: 1px solid black;
-    margin-right: 15px;
-    box-shadow: 2px 2px 2px #888;
-    -moz-box-shadow: 2px 2px 2px #888;
-    -webkit-box-shadow: 2px 2px 2px #888;
-}
-
 i{
     font-size: 25px;
 }
-
+p{
+    margin: 20px;
+}
 .username{
     text-align: center;
     background-color: #eb8;
@@ -34,13 +19,11 @@ i{
     font-size: 20pt;
     padding: 4px;
 }
-
 .info{
     font-style: italic;
     margin: 40px 0px;
     text-align: center;
 }
-
 .center{
     text-align: center;
 }
@@ -55,21 +38,21 @@ i{
 
 .available{
     color: green;
+    text-decoration: underline;
 }
 
 .whisper{
     font-style: italic;
     color: #006600;
 }
-
 #logo{
-    place-content: center;
-    background-color: black;
+    height: 100px;
+    background: black;
 }
-#user-img{
-    width: 20%;
+#hedgehog{
+    position: relative;
+    height: 100px;
 }
-
 #used{
     margin-top: 50px;
 }

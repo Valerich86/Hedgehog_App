@@ -8,8 +8,14 @@ if(isset($_GET['view'])){
 
     echo "<h3>Профиль пользователя $view</h3>";
     showProfile($view);
-    echo "<a data-role='button' data-transition='slide' data-inline='true'
-    data-icon='mail' href='messages.php?view=$view&r=$randstr>Чат</a><div>";
+    if($view !== $user){
+        echo "<a data-role='button' data-transition='slide' data-inline='true'
+            data-icon='mail' href='messages.php?view=$view&r=$randstr'>
+            <span class='whisper'>Чат с пользователем $view</span></a>";
+        echo "<a data-role='button' data-transition='slide' data-inline='true'
+            data-icon='heart' href='friends.php?view=$view&r=$randstr'>
+            <span class='whisper'>Друзья пользователя $view</span></a>";
+    }
     die("</div></body></html>");
 }
 
@@ -28,9 +34,9 @@ elseif(isset($_GET['remove'])){
 
 $result = queryMysql("SELECT user FROM members ORDER BY user");
 
-if($result->rowCount()<2) echo "<br><br>Пока здесь никого нет...";
+if($result->rowCount()<2) echo "<br>Пока здесь никого нет...";
 else      echo "<br>Вот список:<br><br>";
-
+echo "<ul data-filter='true' data-filter-placeholder='Найти...'  data-autodividers='true'>";
 while($row = $result->fetch()){
     if($row['user'] == $user) continue;
 
@@ -43,12 +49,13 @@ while($row = $result->fetch()){
     $result1 = queryMysql("SELECT * FROM friends WHERE user='$user' AND friend='" . $row['user'] . "'");
     $t2 = $result1->rowCount();
 
-    if(($t1 + $t2) > 1) echo " &harr; у Вас в друзьях";
-    elseif($t1)         echo " &larr; получил Ваш запрос";
-    elseif($t2)         {echo " &rarr; отправил Вам запрос"; $follow = "Принять";}
+    if(($t1 + $t2) > 1) echo " &harr; у Вас в друзьях ";
+    elseif($t1)         echo " &larr; получил Ваш запрос ";
+    elseif($t2)         {echo " &rarr; отправил Вам запрос "; $follow = "Принять";}
 
-    if(!$t1) echo " [<a href='members.php?add=" . $row['user'] . "&r=$randstr'>$follow</a>]";
-    else     echo " [<a href='members.php?remove=" . $row['user'] . "&r=$randstr'>Отклонить</a>]";
+    if(!$t1) echo " &larr;<a href='members.php?add=" . $row['user'] . "&r=$randstr'>$follow</a>";
+    else     echo " <a href='members.php?remove=" . $row['user'] . "&r=$randstr'>Отклонить</a>";
+    echo "<br>";
 }
 ?>
         </ul><div>

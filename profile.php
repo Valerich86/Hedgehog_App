@@ -4,39 +4,39 @@ require_once 'header.php';
 if (!$loggedin) die('</div></body></html>');
 
 echo "<h3>Ваш профиль</h3>";
+$text = $photo = $birthday = '';
 
 $result = queryMysql("SELECT * FROM profiles WHERE user='$user'");
 
+if ($result->rowCount()) {
+    while($row = $result->fetch()){
+        $text = $row['about'];
+        $birthday = $row['birthday'];
+    }
+}
 if (isset($_POST['text'])) {
     $text = sanitizeString($_POST['text']);
     $text = preg_replace('/\s\s+/', ' ', $text);
-
     if ($result->rowCount())
-        queryMysql("UPDATE profiles SET text='$text' WHERE user='$user'");
-    else
-        queryMysql("INSERT INTO profiles (user, text) VALUES('$user','$text')");
-} else {
-    if ($result->rowCount()) {
-        $row = $result->fetch();
-        $text = stripslashes($row['text']);
-    } else $text = ''; 
-}
+        queryMysql("UPDATE profiles SET about='$text' WHERE user='$user'");
+} 
+
+if (isset($_POST['birthday'])) {
+    $birthday = $_POST['birthday'];
+    if ($result->rowCount())
+        queryMysql("UPDATE profiles SET birthday='$birthday' WHERE user='$user'");
+} 
 
 $text = stripslashes(preg_replace('/\s\s+/', ' ', $text));
 
 if (isset($_FILES['image']['name'])) {
-    $saveto = "user.jpg";
+    $photo = $_FILES['image']['name'];
+    $saveto = "res/".$photo;
     move_uploaded_file($_FILES['image']['tmp_name'], $saveto);
     $typeok = TRUE;
 
-    $info = array();
-    $width = $height = 0;
-    $type = '';
-
     if(file_exists($saveto)){
         $info   = getimagesize($saveto);
-        $width  = $info[0];
-        $height = $info[1];
         $type   = $info[2];
         switch ($type) { 
             case 1: 
@@ -56,89 +56,30 @@ if (isset($_FILES['image']['name'])) {
         }
     
         if($typeok){
-            $w = 200;
-            $h = 0;
-            
-            if (empty($w)) {
-                $w = ceil($h / ($height / $width));
-            }
-            if (empty($h)) {
-                $h = ceil($w / ($width / $height));
-            }
-            
-            $tmp = imageCreateTrueColor($w, $h);
-            if ($type == 1 || $type == 3) {
-                imagealphablending($tmp, true); 
-                imageSaveAlpha($tmp, true);
-                $transparent = imagecolorallocatealpha($tmp, 0, 0, 0, 127); 
-                imagefill($tmp, 0, 0, $transparent); 
-                imagecolortransparent($tmp, $transparent);    
-            }   
-            
-            $tw = ceil($h / ($height / $width));
-            $th = ceil($w / ($width / $height));
-            if ($tw < $w) {
-                imageCopyResampled($tmp, $img, ceil(($w - $tw) / 2), 0, 0, 0, $tw, $h, $width, $height);        
-            } else {
-                imageCopyResampled($tmp, $img, 0, ceil(($h - $th) / 2), 0, 0, $w, $th, $width, $height);    
-            }            
-            
-            $img = $tmp;
+            if ($result->rowCount())
+                queryMysql("UPDATE profiles SET photo='$photo' WHERE user='$user'");
         }
+        else $photo = '';
     }
-    
+}
+
+
+if (isset($_POST['submit'])){
+    if (!$result->rowCount())
+    queryMysql("INSERT INTO profiles (user, birthday, about, photo) 
+    VALUES('$user', '$birthday','$text','$photo')");
     echo "<script>window.location.replace('members.php?view=$user&r=$randstr');</script>";
-
-    // switch ($_FILES['image']['type']) {
-    //     case "image/gif":
-    //         $src = imagecreatefromgif($saveto);
-    //         break;
-    //     case "image/jpeg":
-    //     case "image/pjpeg":
-    //         $src = imagecreatefromjpeg($saveto);
-    //         break;
-    //     case "image/png":
-    //         $src = imagecreatefrompng($saveto);
-    //         break;
-    //     default:
-    //         $typeok = FALSE;
-    //         break;
-    // }
-
-
-    // if ($typeok) {
-    //     list($w, $h) = getimagesize($saveto);
-
-    //     $max = 100;
-    //     $tw = $w;
-    //     $th = $h;
-
-    //     if ($w > $h && $max < $w) {
-    //         $th = $max / $w * $h;
-    //         $tw = $max;
-    //     } elseif ($h > $w && $max < $h) {
-    //         $tw = $max / $h * $w;
-    //         $th = $max;
-    //     } elseif ($max < $w) {
-    //         $tw = $th = $max;
-    //     }
-
-    //     $tmp = imagecreatetruecolor($tw, $th);
-    //     imagecopyresampled($tmp, $src, 0, 0, 0, 0, $tw, $th, $w, $h);
-    //     imageconvolution($tmp, array(array(-1, -1, -1), array(-1, 16, -1), array(-1, -1, -1)), 8, 0);
-    //     imagejpeg($tmp, $saveto);
-    //     imagedestroy($tmp);
-    //     imagedestroy($src);
-    // }
 }
 
 //showProfile($user);
 echo <<<_END
         <form action="profile.php?r=$randstr" data-ajax="false" method="post" enctype="multipart/form-data">
-            Введите или измените инфо о себе и/или добавьте фото
-            <textarea name="text">$text</textarea><br>
-            Изображение: <input type="file" name="image" size="14">
-            <input type="submit" value="Сохранить">
+            <h3 class='whisper'>Введите или измените инфо о себе и/или добавьте фото</h3>
+            Дата рождения:
+            <input type='date' name='birthday' value='$birthday'>
+            <textarea name="text" placeholder='Немного о себе'>$text</textarea><br>
+            Ваше фото: <input type="file" name="image" size="14">
+            <input type="submit" name='submit' value="Сохранить">
         </form>
     </div><br>
 </body>
